@@ -2799,7 +2799,7 @@ MonoBehaviour:
   fire: {fileID: 21300000, guid: 3567f17d58cf20848841638455748474, type: 3}
   normaldmg: {fileID: 21300000, guid: 330c69b9169bd924f9d4921eb017a2fc, type: 3}
   eyehead: {fileID: 21300000, guid: 853d8ec1a5a4b2745ae2681894053943, type: 3}
-  firehead: {fileID: 21300000, guid: face83ee54c21fa4bbeb03640d3de4e8, type: 3}
+  firehead: {fileID: 21300000, guid: 73b84201b06e6b444892962cdc17d05c, type: 3}
   DamFig: {fileID: 212851955472121540, guid: f4f759dde632596409b729bb9ba55434, type: 3}
 --- !u!114 &693896485
 MonoBehaviour:

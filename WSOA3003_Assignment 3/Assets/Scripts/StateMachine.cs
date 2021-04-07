@@ -211,7 +211,7 @@ public class StateMachine : MonoBehaviour
 		BM.ToggleOFFALLMenus();
 		
 		
-		yield return new WaitForSeconds(0.5f);
+		//yield return new WaitForSeconds(0.5f);
 
 		playermove.playeranim.Play("attack", 0, 0.0f);
 
@@ -243,7 +243,7 @@ public class StateMachine : MonoBehaviour
 		BM.ToggleOFFALLMenus();
 
 
-		yield return new WaitForSeconds(0.5f);
+		//yield return new WaitForSeconds(0.5f);
 		playermove.playeranim.Play("attack", 0, 0.0f);
 
 		yield return new WaitForSeconds(0.6f);
@@ -287,8 +287,10 @@ public class StateMachine : MonoBehaviour
 		BM.Arrow.transform.localPosition = new Vector2(420, BM.Arrow.transform.localPosition.y);
 		BM.Arrow.SetActive(true);
 
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1f);
 
+		enemyinfo.GetComponentInChildren<Animator>().Play("attack", 0, 0.0f);
+		yield return new WaitForSeconds(0.5f);
 		DamagePop(2);
 		playerinfo.currentHP -= enemyinfo.damage;
 		playermove.playeranim.Play("flinch", 0, 0.0f);
