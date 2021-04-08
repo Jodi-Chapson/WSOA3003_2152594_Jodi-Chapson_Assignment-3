@@ -35,9 +35,14 @@ public class StateMachine : MonoBehaviour
 
 	public Sprite fire, normaldmg;
 	public Sprite eyehead, firehead;
+	public MiscScript misc;
 
 
 	public GameObject DamFig;
+	public int healthbonus;
+
+	public int starthealth;
+	public int finishhealth;
 
 
 	public void Start()
@@ -72,8 +77,8 @@ public class StateMachine : MonoBehaviour
 			enemyhead.GetComponent<Image>().sprite = firehead;
 			
 		}
-		
-		
+
+		starthealth = playerinfo.currentHP;
 
 		cam.CamFollow = false;
 		playerlastPos = player.transform.position;
@@ -104,19 +109,29 @@ public class StateMachine : MonoBehaviour
 
 	public void DamagePop(int target)
 	{
-		if (target == 0 || target == 1)
+		if (target == 0 || target == 1 || target == 4)
 		{
 			GameObject dam = Instantiate(DamFig, enemypos.position, Quaternion.identity);
 			dam.transform.position = new Vector3(dam.transform.position.x - 1, dam.transform.position.y + 1, dam.transform.position.z);
 			if (target == 0)
 			{
-				dam.GetComponentInChildren<TextMeshPro>().text = playerinfo.damage.ToString();
+				int bonusdam = playerinfo.damage + 2;
+				dam.GetComponentInChildren<TextMeshPro>().text = bonusdam.ToString();
+
+				dam.GetComponentInChildren<TextMeshPro>().color = Color.blue;
 			}
 			else if (target == 1)
 		    {
-				int bonusdam = playerinfo.damage + (int) playerinfo.damage/2;
+				int bonusdam = (playerinfo.damage + 2) + (int) (playerinfo.damage + 2)/2;
 				dam.GetComponentInChildren<TextMeshPro>().text = bonusdam.ToString();
 				dam.GetComponentInChildren<TextMeshPro>().color = Color.blue;
+			}
+			else if (target == 4)
+			{
+				int bonusdam = playerinfo.damage ;
+				dam.GetComponentInChildren<TextMeshPro>().text = bonusdam.ToString();
+
+				
 			}
 
 			Destroy(dam, 2);
@@ -137,6 +152,13 @@ public class StateMachine : MonoBehaviour
 
 			Destroy(dam, 2);
 
+		}
+		else if (target == 3)
+		{
+			GameObject heal = Instantiate(DamFig, playerinfo.gameObject.transform.position, Quaternion.identity);
+
+			heal.GetComponentInChildren<TextMeshPro>().text = (healthbonus).ToString();
+			heal.GetComponentInChildren<TextMeshPro>().color = Color.green;
 		}
 
 		
@@ -217,7 +239,7 @@ public class StateMachine : MonoBehaviour
 
 		yield return new WaitForSeconds(0.6f);
 
-		DamagePop(0);
+		DamagePop(4);
 		enemyinfo.currentHP -= playerinfo.damage;
 		enemyhealth.value = enemy.GetComponent<Chara_Info>().currentHP;
 
@@ -249,15 +271,15 @@ public class StateMachine : MonoBehaviour
 		yield return new WaitForSeconds(0.6f);
 
 
-		if (enemyinfo.type == 1)
+		if (enemyinfo.type == 1) //base enemy
 		{
-			enemyinfo.currentHP -= playerinfo.damage*2;
+			enemyinfo.currentHP -= (playerinfo.damage + 2)*1;
 			enemyhealth.value = enemy.GetComponent<Chara_Info>().currentHP;
 			DamagePop(0);
 		}
-		else
+		else //elemental enemy
 		{
-			enemyinfo.currentHP -= playerinfo.damage + (int) playerinfo.damage/2;
+			enemyinfo.currentHP -= (playerinfo.damage +2) + (int) (playerinfo.damage +2 )/2;
 			enemyhealth.value = enemy.GetComponent<Chara_Info>().currentHP;
 			DamagePop(1);
 		}
@@ -332,21 +354,22 @@ public class StateMachine : MonoBehaviour
 			if (enemyinfo.type == 1)
 			{
 				//drop elemental
-				supp.canfollow = true;
+				
 				BM.Togglespecialskill();
+				misc.UpgradeWater();
 
 			}
 			else if (enemyinfo.type == 2)
 			{
-				UnlockDoor();
+				misc.ToggleKey();
 
-				yield return new WaitForSeconds(0.5f);
-				endscreen.SetActive(true);
+				//yield return new WaitForSeconds(0.5f);
+				//endscreen.SetActive(true);
 
 			}
 
 			Vector3 newpos = new Vector3((-enemylastPos.x + 2 * playerlastPos.x), (-enemylastPos.y + 2 * playerlastPos.y), 0);
-			playerinfo.currentHP -= 1;
+			
 			
 			player.transform.position = newpos;
 
@@ -355,6 +378,28 @@ public class StateMachine : MonoBehaviour
 			playermove.canmove = true;
 			cam.CamFollow = true;
 			cam.transform.position = camlastpos;
+
+
+			finishhealth = playerinfo.currentHP;
+
+
+			healthbonus = (int)((starthealth - finishhealth)/2);
+			if (healthbonus >= 0)
+			{
+				playerinfo.currentHP += healthbonus;
+				
+				if (playerinfo.currentHP >= playerinfo.maxHP)
+			{
+				playerinfo.currentHP = playerinfo.maxHP;
+			}
+			DamagePop(3);
+			}
+			
+			
+
+			
+			
+
 
 		}
 		else if (conclusion == 2)
@@ -389,11 +434,12 @@ public class StateMachine : MonoBehaviour
 		
 	}
 
-	public void End()
+	public IEnumerator End()
 	{
+		yield return new WaitForSeconds(0.5f);
 		endscreen.SetActive(true);
 	}
-	
+
 
 
 }

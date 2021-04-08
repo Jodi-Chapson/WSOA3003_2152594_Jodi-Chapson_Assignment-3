@@ -236,7 +236,7 @@ MonoBehaviour:
   UnitName: EyeBat
   type: 1
   element: 0
-  damage: 3
+  damage: 4
   maxHP: 10
   currentHP: 10
   gamestate: {fileID: 0}
