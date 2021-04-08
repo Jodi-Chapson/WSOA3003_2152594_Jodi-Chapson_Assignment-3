@@ -345,8 +345,12 @@ public class StateMachine : MonoBehaviour
 
 			}
 
+			Vector3 newpos = new Vector3((-enemylastPos.x + 2 * playerlastPos.x), (-enemylastPos.y + 2 * playerlastPos.y), 0);
+			playerinfo.currentHP -= 1;
+			
+			player.transform.position = newpos;
 
-			player.transform.position = playerlastPos;
+			//player.transform.position = playerlastPos;
 			Destroy(enemy);
 			playermove.canmove = true;
 			cam.CamFollow = true;
